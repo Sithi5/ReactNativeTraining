@@ -1,42 +1,63 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TextInput, Button, FlatList } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  TextInput,
+  Button,
+  FlatList,
+  Text,
+} from 'react-native';
 import Constants from 'expo-constants';
 
 import MoviesItems from './MoviesItems';
-import MOVIES_DATA from '../utils/MoviesData';
 import getFilmsFromApiWithSearchedText from '../api/TMDBApi';
-import MovieData from '../utils/MovieData';
 
-async function Search({}) {
+function Search({}) {
   const [isLoading, setLoading] = useState(true);
   const [movies_data, setMoviesData] = useState([]);
 
-  const getMovies = async () => {
+  var search_title: string = 'Star Wars';
+
+  async function _getMovies() {
     try {
-      const response = await fetch('https://reactnative.dev/movies.json');
-      const json = await response.json();
-      setMoviesData(json.movies);
+      console.log('');
+      setLoading(true);
+      const json = await getFilmsFromApiWithSearchedText(search_title);
+      setMoviesData(json.results);
     } catch (error) {
       console.error(error);
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  function _titleOnChangeText(text: string) {
+    search_title = text;
+  }
 
   return (
     <View style={styles.main_container}>
-      <TextInput style={styles.text_input} placeholder="Titre du film" />
+      <TextInput
+        style={styles.text_input}
+        placeholder="Titre du film"
+        onChangeText={_titleOnChangeText}
+      />
       <View style={styles.button_search_view}>
-        <Button color="green" title="Rechercher" onPress={getMovies} />
+        <Button color="green" title="Rechercher" onPress={_getMovies} />
       </View>
-      <FlatList
-        data={movies_data}
-        renderItem={({ item }) => (
-          <View style={styles.movie_items_container}>
-            <MoviesItems movie={item} />
-          </View>
-        )}
-      ></FlatList>
+      {isLoading ? (
+        <Text>LOADING MOVIES</Text>
+      ) : (
+        <FlatList
+          data={movies_data}
+          keyExtractor={({ id }) => id}
+          renderItem={({ item }) => (
+            <View style={styles.movie_items_container}>
+              <MoviesItems movie={item} />
+            </View>
+          )}
+        />
+      )}
     </View>
   );
 }

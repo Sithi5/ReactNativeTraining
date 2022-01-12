@@ -13,15 +13,16 @@ import Constants from 'expo-constants';
 import MoviesItems from './MoviesItems';
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
 import MovieData from './MovieData';
+import { TESTMOVIEDATA } from '../utils/TestMovieData.d.';
+
+var search_title: string = '';
+var page = 0;
+var total_page = 0;
 
 function Search({}) {
   console.log('render - search');
   const [isLoading, setLoading] = useState(false);
-  const [movies_data, setMoviesData] = useState<any[]>([]);
-
-  var search_title: string = '';
-  var page = 0;
-  var total_page = 0;
+  const [movies_data, setMoviesData] = useState<MovieData[]>([]);
 
   async function _getMovies() {
     if (search_title.length > 0) {
@@ -29,18 +30,30 @@ function Search({}) {
         setLoading(true);
         let response = await getFilmsFromTMDBApiWithSearchedText(
           search_title,
-          1
+          page + 1
         );
         page = response.page;
-        total_page = response.total_page;
+        total_page = response.total_pages;
+        // setMoviesData(movies_data.concat(response.results));
 
-        setMoviesData(response.result);
+        setMoviesData(TESTMOVIEDATA);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
     }
+  }
+  function _searchFilms() {
+    page = 0;
+
+    total_page = 0;
+    setMoviesData([]);
+    console.log('page = ' + page);
+    console.log('total_page = ' + total_page);
+    console.log('movies_data = ');
+    console.log(movies_data);
+    _getMovies();
   }
 
   function _displayLoading() {
@@ -59,10 +72,10 @@ function Search({}) {
         onChangeText={(text) => {
           search_title = text;
         }}
-        onSubmitEditing={_getMovies}
+        onSubmitEditing={_searchFilms}
       />
       <View style={styles.button_search_view}>
-        <Button color="green" title="Rechercher" onPress={_getMovies} />
+        <Button color="green" title="Rechercher" onPress={_searchFilms} />
       </View>
       {isLoading ? (
         _displayLoading()
@@ -75,8 +88,12 @@ function Search({}) {
               <MoviesItems movie={item} />
             </View>
           )}
-          // onEndReachedThreshold={0.5}
-          // onEndReached={_getMovies}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            if (page < total_page) {
+              _getMovies();
+            }
+          }}
         />
       )}
     </View>

@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
-import MovieData from '../utils/MovieData';
+import { getImageFromTMDBApi } from '../api/TMDBApi';
+import MovieData from './MovieData';
 
 type Props = {
   movie: MovieData;
@@ -7,12 +8,11 @@ type Props = {
 
 function MoviesItems(props: Props) {
   let movie = props.movie;
+  let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
+
   return (
     <View style={styles.main_container}>
-      <Image
-        style={styles.movie_image}
-        source={require('../assets/star_wars_l_ascension_de_skywalker.png')}
-      />
+      <Image source={{ uri: image_url }} style={styles.movie_image} />
       <View style={styles.content_main_container}>
         <View style={styles.content_top_container}>
           <Text style={styles.title_text}>{movie.title}</Text>

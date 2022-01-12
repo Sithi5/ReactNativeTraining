@@ -6,33 +6,49 @@ import {
   Button,
   FlatList,
   Text,
+  ActivityIndicator,
 } from 'react-native';
 import Constants from 'expo-constants';
 
 import MoviesItems from './MoviesItems';
-import getFilmsFromApiWithSearchedText from '../api/TMDBApi';
+import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
+import MovieData from './MovieData';
 
 function Search({}) {
-  const [isLoading, setLoading] = useState(true);
-  const [movies_data, setMoviesData] = useState([]);
+  console.log('render - search');
+  const [isLoading, setLoading] = useState(false);
+  const [movies_data, setMoviesData] = useState<any[]>([]);
 
-  var search_title: string = 'Star Wars';
+  var search_title: string = '';
+  var page = 0;
+  var total_page = 0;
 
   async function _getMovies() {
-    try {
-      console.log('');
-      setLoading(true);
-      const json = await getFilmsFromApiWithSearchedText(search_title);
-      setMoviesData(json.results);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+    if (search_title.length > 0) {
+      try {
+        setLoading(true);
+        let response = await getFilmsFromTMDBApiWithSearchedText(
+          search_title,
+          1
+        );
+        page = response.page;
+        total_page = response.total_page;
+
+        setMoviesData(response.result);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
   }
 
-  function _titleOnChangeText(text: string) {
-    search_title = text;
+  function _displayLoading() {
+    return (
+      <View style={styles.loading_container}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
   }
 
   return (
@@ -40,13 +56,16 @@ function Search({}) {
       <TextInput
         style={styles.text_input}
         placeholder="Titre du film"
-        onChangeText={_titleOnChangeText}
+        onChangeText={(text) => {
+          search_title = text;
+        }}
+        onSubmitEditing={_getMovies}
       />
       <View style={styles.button_search_view}>
         <Button color="green" title="Rechercher" onPress={_getMovies} />
       </View>
       {isLoading ? (
-        <Text>LOADING MOVIES</Text>
+        _displayLoading()
       ) : (
         <FlatList
           data={movies_data}
@@ -56,6 +75,8 @@ function Search({}) {
               <MoviesItems movie={item} />
             </View>
           )}
+          // onEndReachedThreshold={0.5}
+          // onEndReached={_getMovies}
         />
       )}
     </View>
@@ -80,6 +101,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     paddingTop: 5,
     paddingLeft: 5,
+  },
+  loading_container: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 100,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

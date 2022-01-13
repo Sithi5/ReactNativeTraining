@@ -12,7 +12,7 @@ import Constants from 'expo-constants';
 
 import MoviesItems from './MoviesItems';
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
-import MovieData from './MovieData';
+import MovieData from '../types/MovieData';
 
 var search_title: string = '';
 var page = 0;

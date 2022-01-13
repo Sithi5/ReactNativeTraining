@@ -1,5 +1,10 @@
 import Search from './components/Search';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
-  return <Search />;
+  return (
+    <NavigationContainer>
+      <Search />
+    </NavigationContainer>
+  );
 }

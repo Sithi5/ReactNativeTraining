@@ -1,4 +1,4 @@
-import MovieData from '../components/MovieData';
+import MovieData from '../types/MovieData';
 
 var id: number = 0;
 

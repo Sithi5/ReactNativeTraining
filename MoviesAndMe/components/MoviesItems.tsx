@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { getImageFromTMDBApi } from '../api/TMDBApi';
-import MovieData from './MovieData';
+import MovieData from '../types/MovieData';
 
 type Props = {
   movie: MovieData;

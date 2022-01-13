@@ -13,7 +13,6 @@ import Constants from 'expo-constants';
 import MoviesItems from './MoviesItems';
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
 import MovieData from './MovieData';
-import { TESTMOVIEDATA } from '../utils/TestMovieData.d.';
 
 var search_title: string = '';
 var page = 0;
@@ -24,7 +23,7 @@ function Search({}) {
   const [isLoading, setLoading] = useState(false);
   const [movies_data, setMoviesData] = useState<MovieData[]>([]);
 
-  async function _getMovies() {
+  async function _getMovies(clear_movie_data: boolean = false) {
     if (search_title.length > 0) {
       try {
         setLoading(true);
@@ -34,9 +33,11 @@ function Search({}) {
         );
         page = response.page;
         total_page = response.total_pages;
-        // setMoviesData(movies_data.concat(response.results));
-
-        setMoviesData(TESTMOVIEDATA);
+        if (clear_movie_data) {
+          setMoviesData(response.results);
+        } else {
+          setMoviesData(movies_data.concat(response.results));
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -44,24 +45,20 @@ function Search({}) {
       }
     }
   }
-  function _searchFilms() {
+  function _searchMovies() {
     page = 0;
-
     total_page = 0;
-    setMoviesData([]);
-    console.log('page = ' + page);
-    console.log('total_page = ' + total_page);
-    console.log('movies_data = ');
-    console.log(movies_data);
-    _getMovies();
+    _getMovies(true);
   }
 
   function _displayLoading() {
-    return (
-      <View style={styles.loading_container}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    if (isLoading) {
+      return (
+        <View style={styles.loading_container}>
+          <ActivityIndicator size="large" color="grey" />
+        </View>
+      );
+    }
   }
 
   return (
@@ -72,30 +69,27 @@ function Search({}) {
         onChangeText={(text) => {
           search_title = text;
         }}
-        onSubmitEditing={_searchFilms}
+        onSubmitEditing={_searchMovies}
       />
       <View style={styles.button_search_view}>
-        <Button color="green" title="Rechercher" onPress={_searchFilms} />
+        <Button color="green" title="Rechercher" onPress={_searchMovies} />
       </View>
-      {isLoading ? (
-        _displayLoading()
-      ) : (
-        <FlatList
-          data={movies_data}
-          keyExtractor={({ id }) => id}
-          renderItem={({ item }) => (
-            <View style={styles.movie_items_container}>
-              <MoviesItems movie={item} />
-            </View>
-          )}
-          onEndReachedThreshold={0.5}
-          onEndReached={() => {
-            if (page < total_page) {
-              _getMovies();
-            }
-          }}
-        />
-      )}
+      <FlatList
+        data={movies_data}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.movie_items_container}>
+            <MoviesItems movie={item} />
+          </View>
+        )}
+        onEndReachedThreshold={0.5}
+        onEndReached={() => {
+          if (page < total_page) {
+            _getMovies();
+          }
+        }}
+      />
+      {_displayLoading()}
     </View>
   );
 }

@@ -8,18 +8,20 @@ import {
   Text,
   ActivityIndicator,
 } from 'react-native';
-import Constants from 'expo-constants';
+import RootStackParamList from '../types/RootStackParamList';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import MoviesItems from './MoviesItems';
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
 import MovieData from '../types/MovieData';
 
+type Props = NativeStackScreenProps<RootStackParamList, 'Search'>;
+
 var search_title: string = '';
 var page = 0;
 var total_page = 0;
 
-function Search({}) {
-  console.log('render - search');
+export default function SearchScreen({ route, navigation }: Props) {
   const [isLoading, setLoading] = useState(false);
   const [movies_data, setMoviesData] = useState<MovieData[]>([]);
 
@@ -61,6 +63,10 @@ function Search({}) {
     }
   }
 
+  function _navigateToMovieDetails(movie: MovieData) {
+    navigation.navigate('MovieDetails', { movie });
+  }
+
   return (
     <View style={styles.main_container}>
       <TextInput
@@ -79,7 +85,10 @@ function Search({}) {
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
           <View style={styles.movie_items_container}>
-            <MoviesItems movie={item} />
+            <MoviesItems
+              movie={item}
+              navigateToMovieDetails={_navigateToMovieDetails}
+            />
           </View>
         )}
         onEndReachedThreshold={0.5}
@@ -95,7 +104,7 @@ function Search({}) {
 }
 
 const styles = StyleSheet.create({
-  main_container: { flex: 1, marginTop: Constants.statusBarHeight },
+  main_container: { flex: 1 },
   text_input: {
     marginLeft: 5,
     marginRight: 5,
@@ -123,5 +132,3 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
-
-export default Search;

@@ -1,22 +1,18 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, Button } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { getImageFromTMDBApi } from '../api/TMDBApi';
+import RootStackParamList from '../types/RootStackParamList';
 import MovieData from '../types/MovieData';
+import { getImageFromTMDBApi } from '../api/TMDBApi';
 
-type Props = {
-  movie: MovieData;
-  navigateToMovieDetails: (movie: MovieData) => void;
-};
+type Props = NativeStackScreenProps<RootStackParamList, 'MovieDetails'>;
 
-export default function MoviesItems(props: Props) {
-  let { movie, navigateToMovieDetails } = props;
+export default function MovieDetailsScreen({ route, navigation }: Props) {
+  let movie: MovieData = route.params.movie;
   let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
 
   return (
-    <TouchableOpacity
-      style={styles.main_container}
-      onPress={() => navigateToMovieDetails(movie)}
-    >
+    <View style={styles.main_container}>
       <Image source={{ uri: image_url }} style={styles.movie_image} />
       <View style={styles.content_main_container}>
         <View style={styles.content_top_container}>
@@ -33,7 +29,7 @@ export default function MoviesItems(props: Props) {
           <Text style={styles.date_text}>{movie.release_date}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

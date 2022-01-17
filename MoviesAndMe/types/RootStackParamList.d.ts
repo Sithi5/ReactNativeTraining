@@ -1,8 +1,9 @@
 import MovieData from './MovieData';
+import MovieId from './MovieId';
 
 type RootStackParamList = {
   Search: undefined;
-  MovieDetails: { movie: MovieData };
+  MovieDetails: { movie_id: MovieId };
   //   Profile: { userId: string };
 };
 

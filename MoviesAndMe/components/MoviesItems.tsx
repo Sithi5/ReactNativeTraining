@@ -1,11 +1,13 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-
 import { getImageFromTMDBApi } from '../api/TMDBApi';
+
+// Types
 import MovieData from '../types/MovieData';
+import MovieId from '../types/MovieId';
 
 type Props = {
   movie: MovieData;
-  navigateToMovieDetails: (movie: MovieData) => void;
+  navigateToMovieDetails: (movie_id: MovieId) => void;
 };
 
 export default function MoviesItems(props: Props) {
@@ -15,7 +17,7 @@ export default function MoviesItems(props: Props) {
   return (
     <TouchableOpacity
       style={styles.main_container}
-      onPress={() => navigateToMovieDetails(movie)}
+      onPress={() => navigateToMovieDetails(movie.movie_id)}
     >
       <Image source={{ uri: image_url }} style={styles.movie_image} />
       <View style={styles.content_main_container}>

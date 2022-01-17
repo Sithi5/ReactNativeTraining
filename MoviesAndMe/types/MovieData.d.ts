@@ -1,5 +1,7 @@
+import MovieId from './MovieId';
+
 type MovieData = {
-  id: string;
+  movie_id: MovieId;
   title: string;
   poster_path?: string;
   vote_average?: number;

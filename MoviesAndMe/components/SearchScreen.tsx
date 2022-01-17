@@ -14,6 +14,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import MoviesItems from './MoviesItems';
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
 import MovieData from '../types/MovieData';
+import MovieId from '../types/MovieId';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Search'>;
 
@@ -63,8 +64,8 @@ export default function SearchScreen({ route, navigation }: Props) {
     }
   }
 
-  function _navigateToMovieDetails(movie: MovieData) {
-    navigation.navigate('MovieDetails', { movie });
+  function _navigateToMovieDetails(movie_id: MovieId) {
+    navigation.navigate('MovieDetails', { movie_id: movie_id });
   }
 
   return (
@@ -82,7 +83,7 @@ export default function SearchScreen({ route, navigation }: Props) {
       </View>
       <FlatList
         data={movies_data}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item.movie_id.toString()}
         renderItem={({ item }) => (
           <View style={styles.movie_items_container}>
             <MoviesItems

@@ -2,35 +2,37 @@ import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import RootStackParamList from '../types/RootStackParamList';
-import MovieData from '../types/MovieData';
 import { getImageFromTMDBApi } from '../api/TMDBApi';
+import Id from '../types/MovieId';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MovieDetails'>;
 
 export default function MovieDetailsScreen({ route, navigation }: Props) {
-  let movie: MovieData = route.params.movie;
-  let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
+  let movie_id: Id = route.params.movie_id;
 
-  return (
-    <View style={styles.main_container}>
-      <Image source={{ uri: image_url }} style={styles.movie_image} />
-      <View style={styles.content_main_container}>
-        <View style={styles.content_top_container}>
-          <Text style={styles.title_text}>{movie.title}</Text>
-          <Text style={styles.vote_text}>{movie.vote_average}</Text>
-        </View>
+  return <View></View>;
+  // let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
 
-        <View style={styles.content_middle_container}>
-          <Text style={styles.description_text} numberOfLines={6}>
-            {movie.overview}
-          </Text>
-        </View>
-        <View style={styles.content_bottom_container}>
-          <Text style={styles.date_text}>{movie.release_date}</Text>
-        </View>
-      </View>
-    </View>
-  );
+  // return (
+  //   <View style={styles.main_container}>
+  //     <Image source={{ uri: image_url }} style={styles.movie_image} />
+  //     <View style={styles.content_main_container}>
+  //       <View style={styles.content_top_container}>
+  //         <Text style={styles.title_text}>{movie.title}</Text>
+  //         <Text style={styles.vote_text}>{movie.vote_average}</Text>
+  //       </View>
+
+  //       <View style={styles.content_middle_container}>
+  //         <Text style={styles.description_text} numberOfLines={6}>
+  //           {movie.overview}
+  //         </Text>
+  //       </View>
+  //       <View style={styles.content_bottom_container}>
+  //         <Text style={styles.date_text}>{movie.release_date}</Text>
+  //       </View>
+  //     </View>
+  //   </View>
+  // );
 }
 
 const styles = StyleSheet.create({

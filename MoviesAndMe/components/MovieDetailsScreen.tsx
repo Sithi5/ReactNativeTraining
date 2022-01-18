@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { View, Text, StyleSheet, Image, Button } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 

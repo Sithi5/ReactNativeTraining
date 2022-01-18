@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { View, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 
@@ -21,9 +22,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'blue',
   },
 });
-
-{
-  /* <View style={{ height: 50, width: 50, backgroundColor: "yellow" }}></View>
-<View style={{ height: 50, width: 50, backgroundColor: "red" }}></View>
-<View style={{ height: 50, width: 50, backgroundColor: "green" }}></View> */
-}

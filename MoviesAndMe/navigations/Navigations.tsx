@@ -1,29 +1,81 @@
+import { Image, StyleSheet, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {
-  StyleSheet,
-  View,
-  TextInput,
-  Button,
-  FlatList,
-  Text,
-  ActivityIndicator,
-} from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import MovieDetailsScreen from '../components/MovieDetailsScreen';
 import SearchScreen from '../components/SearchScreen';
-import type { RootStackParamList } from '../types/RootStackParamList';
+import type { SearchStackParamList } from '../types/SearchStackParamList';
+import type { RootTabParamList } from '../types/RootTabParamList';
+import FavoritesScreen from '../components/FavoritesScreen';
 
-const Stack = createNativeStackNavigator<RootStackParamList>();
+const SearchStack = createNativeStackNavigator<SearchStackParamList>();
 
-export default function RootNavigation() {
+function SearchStackNavigator() {
   return (
-    <Stack.Navigator initialRouteName="Search">
-      <Stack.Screen name="Search" component={SearchScreen} />
-      <Stack.Screen
+    <SearchStack.Navigator initialRouteName="Search">
+      <SearchStack.Screen name="Search" component={SearchScreen} />
+      <SearchStack.Screen
         name="MovieDetails"
         component={MovieDetailsScreen}
         options={{ title: 'Movie details' }}
       />
-    </Stack.Navigator>
+    </SearchStack.Navigator>
   );
 }
+
+const Tab = createBottomTabNavigator<RootTabParamList>();
+
+export default function RootTabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({}) => ({
+        tabBarActiveTintColor: 'green',
+        tabBarActiveBackgroundColor: 'grey',
+        tabBarInactiveBackgroundColor: 'white',
+        tabBarInactiveTintColor: 'gray',
+        tabBarShowLabel: false,
+      })}
+    >
+      <Tab.Screen
+        name="SearchStack"
+        component={SearchStackNavigator}
+        options={{
+          title: '',
+          tabBarIcon: () => {
+            let image_name = '../images/icon_search.png';
+            return (
+              <Image
+                style={styles.tab_bar_icon}
+                source={require(image_name)}
+              ></Image>
+            );
+          },
+          headerShown: false,
+        }}
+      />
+      <Tab.Screen
+        name="Favorites"
+        component={FavoritesScreen}
+        options={{
+          title: 'Favorites',
+          tabBarIcon: () => {
+            let image_name = '../images/icon_favorite.png';
+            return (
+              <Image
+                style={styles.tab_bar_icon}
+                source={require(image_name)}
+              ></Image>
+            );
+          },
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+const styles = StyleSheet.create({
+  tab_bar_icon: {
+    width: 30,
+    height: 30,
+  },
+});

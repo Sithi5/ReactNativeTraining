@@ -5,7 +5,7 @@ import 'intl/locale-data/jsonp/en';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainNavigation from './navigations/Navigations';
+import RootTabNavigation from './navigations/Navigations';
 
 import { store } from './redux/Store';
 
@@ -15,7 +15,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <MainNavigation />
+        <RootTabNavigation />
       </NavigationContainer>
     </Provider>
   );

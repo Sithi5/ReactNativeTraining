@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 // Types
-import type { RootStackParamList } from '../types/RootStackParamList';
+import type { SearchStackParamList } from '../types/SearchStackParamList';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { MovieData } from '../types/MovieData';
 import type { Id } from '../types/Id';
@@ -21,7 +21,7 @@ import MoviesItems from './MoviesItems';
 // Api
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Search'>;
+type Props = NativeStackScreenProps<SearchStackParamList, 'Search'>;
 
 var search_title: string = '';
 var page = 0;

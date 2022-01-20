@@ -15,14 +15,14 @@ import { useAppSelector, useAppDispatch } from '../redux/Hooks';
 
 import { updateFavorites } from '../redux/FavoritesSlice';
 
-import type { RootStackParamList } from '../types/RootStackParamList';
+import type { SearchStackParamList } from '../types/SearchStackParamList';
 import type { Id } from '../types/Id';
 import type { MovieData } from '../types/MovieData';
 
 // Api
 import { getImageFromTMDBApi, getMovieDetailFromApi } from '../api/TMDBApi';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'MovieDetails'>;
+type Props = NativeStackScreenProps<SearchStackParamList, 'MovieDetails'>;
 
 export default function MovieDetailsScreen({ route, navigation }: Props) {
   const favorites = useAppSelector((state) => state.favorites.list);

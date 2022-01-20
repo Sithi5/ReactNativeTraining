@@ -3,8 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { getImageFromTMDBApi } from '../api/TMDBApi';
 
 // Redux
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/Store';
+import { useAppSelector } from '../redux/Hooks';
 
 // Types
 import type { MovieData } from '../types/MovieData';
@@ -18,7 +17,7 @@ type Props = {
 export default function MoviesItems(props: Props) {
   let { movie, navigateToMovieDetails } = props;
   let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
-  const favorites = useSelector((state: RootState) => state.favorites.list);
+  const favorites = useAppSelector((state) => state.favorites.list);
 
   function _displayFavoriteImage() {
     if (favorites.includes(movie.id)) {

@@ -11,8 +11,8 @@ import {
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 // Redux
-import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../redux/Store';
+import { useAppSelector, useAppDispatch } from '../redux/Hooks';
+
 import { updateFavorites } from '../redux/FavoritesSlice';
 
 import type { RootStackParamList } from '../types/RootStackParamList';
@@ -25,8 +25,8 @@ import { getImageFromTMDBApi, getMovieDetailFromApi } from '../api/TMDBApi';
 type Props = NativeStackScreenProps<RootStackParamList, 'MovieDetails'>;
 
 export default function MovieDetailsScreen({ route, navigation }: Props) {
-  const favorites = useSelector((state: RootState) => state.favorites.list);
-  const dispatch = useDispatch();
+  const favorites = useAppSelector((state) => state.favorites.list);
+  const dispatch = useAppDispatch();
 
   const id: Id = route.params.id;
 

@@ -1,10 +1,11 @@
-import MovieId from '../types/MovieId';
+// Types
+import Id from '../types/Id';
 
 const API_KEY = '2a60957cda64b52e0af05890287c9980';
 const API_BASE_URL = 'https://api.themoviedb.org/';
 const API_IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
-export async function getMovieDetailFromApi(movie_id: MovieId) {
+export async function getMovieDetailFromApi(movie_id: Id) {
   const url = API_BASE_URL + '3/movie/' + movie_id + '?api_key=' + API_KEY;
   try {
     const response = await fetch(url);

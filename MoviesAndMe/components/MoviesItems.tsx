@@ -1,40 +1,56 @@
 import React from 'react';
-
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { getImageFromTMDBApi } from '../api/TMDBApi';
 
+// Redux
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/Store';
+
 // Types
-import MovieData from '../types/MovieData';
-import MovieId from '../types/MovieId';
+import type { MovieData } from '../types/MovieData';
+import type { Id } from '../types/Id';
 
 type Props = {
   movie: MovieData;
-  navigateToMovieDetails: (movie_id: MovieId) => void;
+  navigateToMovieDetails: (movie_id: Id) => void;
 };
 
 export default function MoviesItems(props: Props) {
   let { movie, navigateToMovieDetails } = props;
   let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
+  const favorites = useSelector((state: RootState) => state.favorites.list);
+
+  function _displayFavoriteImage() {
+    if (favorites.includes(movie.id)) {
+      return (
+        <Image
+          style={styles.favorite_icon}
+          source={require('../images/icon_favorite.png')}
+        />
+      );
+    }
+  }
 
   return (
     <TouchableOpacity
       style={styles.main_container}
-      onPress={() => navigateToMovieDetails(movie.movie_id)}
+      onPress={() => navigateToMovieDetails(movie.id)}
     >
       <Image source={{ uri: image_url }} style={styles.movie_image} />
       <View style={styles.content_main_container}>
         <View style={styles.content_top_container}>
+          {_displayFavoriteImage()}
           <Text style={styles.title_text}>{movie.title}</Text>
           <Text style={styles.vote_text}>{movie.vote_average}</Text>
         </View>
 
         <View style={styles.content_middle_container}>
-          <Text style={styles.description_text} numberOfLines={6}>
+          <Text style={styles.overview_text} numberOfLines={6}>
             {movie.overview}
           </Text>
         </View>
         <View style={styles.content_bottom_container}>
-          <Text style={styles.date_text}>{movie.release_date}</Text>
+          <Text style={styles.release_date_text}>{movie.release_date}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -51,7 +67,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 180,
     margin: 5,
-    backgroundColor: 'gray',
+    backgroundColor: 'grey',
   },
   content_main_container: {
     flexDirection: 'column',
@@ -62,6 +78,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 3,
   },
+
   content_middle_container: { flex: 7 },
   content_bottom_container: {
     flex: 1,
@@ -73,6 +90,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 20,
   },
+  favorite_icon: {
+    width: 25,
+    height: 25,
+  },
   vote_text: {
     textAlign: 'right',
     fontWeight: 'bold',
@@ -80,6 +101,6 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 25,
   },
-  description_text: { fontStyle: 'italic', color: 'grey' },
-  date_text: { textAlign: 'right' },
+  overview_text: { fontStyle: 'italic', color: 'grey' },
+  release_date_text: { textAlign: 'right' },
 });

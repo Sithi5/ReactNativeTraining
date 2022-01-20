@@ -1,10 +1,8 @@
-import MovieData from './MovieData';
-import MovieId from './MovieId';
+import type MovieData from './MovieData';
+import type Id from './Id';
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Search: undefined;
-  MovieDetails: { movie_id: MovieId };
+  MovieDetails: { id: Id };
   //   Profile: { userId: string };
 };
-
-export default RootStackParamList;

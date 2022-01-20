@@ -11,7 +11,7 @@ import {
 
 import MovieDetailsScreen from '../components/MovieDetailsScreen';
 import SearchScreen from '../components/SearchScreen';
-import RootStackParamList from '../types/RootStackParamList';
+import type { RootStackParamList } from '../types/RootStackParamList';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

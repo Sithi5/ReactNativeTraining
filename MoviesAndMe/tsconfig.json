@@ -10,8 +10,13 @@
     "moduleResolution": "node",
     "noEmit": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*", "*.ios", "*.android"]
+    }
   },
+
   "exclude": [
     "node_modules",
     "babel.config.js",

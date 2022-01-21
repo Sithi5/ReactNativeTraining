@@ -2,11 +2,16 @@ import { Image, StyleSheet, Text } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
+// Component
 import MovieDetailsScreen from '../components/MovieDetailsScreen';
 import SearchScreen from '../components/SearchScreen';
-import type { SearchStackParamList } from '../types/SearchStackParamList';
-import type { RootTabParamList } from '../types/RootTabParamList';
 import FavoritesScreen from '../components/FavoritesScreen';
+
+// Type
+import type { RootTabParamList } from '../types/RootTabParamList';
+import type { SearchStackParamList } from '../types/SearchStackParamList';
+import { FavoritesStackParamList } from '../types/FavoritesStackParamList';
+import TestScreen from '../components/TestScreen';
 
 const SearchStack = createNativeStackNavigator<SearchStackParamList>();
 
@@ -23,6 +28,21 @@ function SearchStackNavigator() {
   );
 }
 
+const FavoritesStack = createNativeStackNavigator<FavoritesStackParamList>();
+
+function FavoritesStackNavigator() {
+  return (
+    <FavoritesStack.Navigator initialRouteName="Favorites">
+      <FavoritesStack.Screen name="Favorites" component={FavoritesScreen} />
+      <FavoritesStack.Screen
+        name="MovieDetails"
+        component={MovieDetailsScreen}
+        options={{ title: 'Movie details' }}
+      />
+    </FavoritesStack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 export default function RootTabNavigator() {
@@ -30,16 +50,34 @@ export default function RootTabNavigator() {
     <Tab.Navigator
       screenOptions={({}) => ({
         tabBarActiveTintColor: 'green',
-        tabBarActiveBackgroundColor: 'grey',
+        tabBarActiveBackgroundColor: 'lightgrey',
         tabBarInactiveBackgroundColor: 'white',
         tabBarInactiveTintColor: 'gray',
         tabBarShowLabel: false,
       })}
     >
       <Tab.Screen
+        name="Test"
+        component={TestScreen}
+        options={{
+          title: 'Test',
+          tabBarIcon: () => {
+            let image_name = '../images/icon_testing.png';
+            return (
+              <Image
+                style={styles.tab_bar_icon}
+                source={require(image_name)}
+              ></Image>
+            );
+          },
+        }}
+      />
+
+      <Tab.Screen
         name="SearchStack"
         component={SearchStackNavigator}
         options={{
+          headerShown: false,
           title: '',
           tabBarIcon: () => {
             let image_name = '../images/icon_search.png';
@@ -50,14 +88,14 @@ export default function RootTabNavigator() {
               ></Image>
             );
           },
-          headerShown: false,
         }}
       />
       <Tab.Screen
-        name="Favorites"
-        component={FavoritesScreen}
+        name="FavoritesStack"
+        component={FavoritesStackNavigator}
         options={{
-          title: 'Favorites',
+          headerShown: false,
+          title: '',
           tabBarIcon: () => {
             let image_name = '../images/icon_favorite.png';
             return (

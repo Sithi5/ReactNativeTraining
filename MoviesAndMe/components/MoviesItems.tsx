@@ -11,11 +11,11 @@ import type { Id } from '../types/Id';
 
 type Props = {
   movie: MovieData;
-  navigateToMovieDetails: (movie_id: Id) => void;
+  _navigateToMovieDetails: (movie_id: Id) => void;
 };
 
 export default function MoviesItems(props: Props) {
-  let { movie, navigateToMovieDetails } = props;
+  let { movie, _navigateToMovieDetails } = props;
   let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
   const favorites = useAppSelector((state) => state.favorites.list);
 
@@ -33,7 +33,7 @@ export default function MoviesItems(props: Props) {
   return (
     <TouchableOpacity
       style={styles.main_container}
-      onPress={() => navigateToMovieDetails(movie.id)}
+      onPress={() => _navigateToMovieDetails(movie.id)}
     >
       <Image source={{ uri: image_url }} style={styles.movie_image} />
       <View style={styles.content_main_container}>

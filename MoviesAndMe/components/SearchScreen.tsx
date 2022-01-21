@@ -4,34 +4,55 @@ import {
   View,
   TextInput,
   Button,
-  FlatList,
-  Text,
   ActivityIndicator,
 } from 'react-native';
 
 // Types
+import type {
+  CompositeScreenProps,
+  CompositeNavigationProp,
+} from '@react-navigation/native';
+import type {
+  NativeStackScreenProps,
+  NativeStackNavigationProp,
+} from '@react-navigation/native-stack';
+import type {
+  BottomTabScreenProps,
+  BottomTabNavigationProp,
+} from '@react-navigation/bottom-tabs';
 import type { SearchStackParamList } from '../types/SearchStackParamList';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootTabParamList } from '../types/RootTabParamList';
+
 import type { MovieData } from '../types/MovieData';
-import type { Id } from '../types/Id';
 
 // Components
-import MoviesItems from './MoviesItems';
+import DisplayMoviesList from './DisplayMoviesList';
 
 // Api
 import getFilmsFromTMDBApiWithSearchedText from '../api/TMDBApi';
 
-type Props = NativeStackScreenProps<SearchStackParamList, 'Search'>;
+export type SearchNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<SearchStackParamList, 'Search'>,
+  BottomTabNavigationProp<RootTabParamList>
+>;
+
+type SearchScreenNavigationProp = CompositeScreenProps<
+  NativeStackScreenProps<SearchStackParamList, 'Search'>,
+  BottomTabScreenProps<RootTabParamList>
+>;
 
 var search_title: string = '';
 var page = 0;
 var total_page = 0;
 
-export default function SearchScreen({ route, navigation }: Props) {
+export default function SearchScreen({
+  route,
+  navigation,
+}: SearchScreenNavigationProp) {
   const [isLoading, setLoading] = useState(false);
   const [movies_data, setMoviesData] = useState<MovieData[]>([]);
 
-  async function _getMovies(clear_movie_data: boolean = false) {
+  async function _loadMovies(clear_movie_data: boolean = false) {
     if (search_title.length > 0) {
       try {
         setLoading(true);
@@ -54,10 +75,10 @@ export default function SearchScreen({ route, navigation }: Props) {
     }
   }
 
-  function _searchMovies() {
+  function _newMoviesSearch() {
     page = 0;
     total_page = 0;
-    _getMovies(true);
+    _loadMovies(true);
   }
 
   function _displayLoading() {
@@ -70,10 +91,6 @@ export default function SearchScreen({ route, navigation }: Props) {
     }
   }
 
-  function _navigateToMovieDetails(id: Id) {
-    navigation.navigate('MovieDetails', { id: id });
-  }
-
   return (
     <View style={styles.main_container}>
       <TextInput
@@ -82,28 +99,17 @@ export default function SearchScreen({ route, navigation }: Props) {
         onChangeText={(text) => {
           search_title = text;
         }}
-        onSubmitEditing={_searchMovies}
+        onSubmitEditing={_newMoviesSearch}
       />
       <View style={styles.button_search_view}>
-        <Button color="green" title="Rechercher" onPress={_searchMovies} />
+        <Button color="green" title="Rechercher" onPress={_newMoviesSearch} />
       </View>
-      <FlatList
-        data={movies_data}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.movie_items_container}>
-            <MoviesItems
-              movie={item}
-              navigateToMovieDetails={_navigateToMovieDetails}
-            />
-          </View>
-        )}
-        onEndReachedThreshold={0.5}
-        onEndReached={() => {
-          if (page < total_page) {
-            _getMovies();
-          }
-        }}
+      <DisplayMoviesList
+        navigation={navigation}
+        movies_data={movies_data}
+        page={page}
+        total_page={total_page}
+        _loadMovies={_loadMovies}
       />
       {_displayLoading()}
     </View>

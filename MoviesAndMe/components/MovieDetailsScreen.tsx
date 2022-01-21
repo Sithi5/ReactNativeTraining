@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  Platform,
   View,
   Text,
   StyleSheet,
@@ -7,6 +8,7 @@ import {
   ActivityIndicator,
   Image,
   TouchableOpacity,
+  Share,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -15,23 +17,39 @@ import { useAppSelector, useAppDispatch } from '../redux/Hooks';
 
 import { updateFavorites } from '../redux/FavoritesSlice';
 
+// Type
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import type { SearchStackParamList } from '../types/SearchStackParamList';
+import type { FavoritesStackParamList } from '../types/FavoritesStackParamList';
+import type { RootTabParamList } from '../types/RootTabParamList';
 import type { Id } from '../types/Id';
 import type { MovieData } from '../types/MovieData';
 
 // Api
 import { getImageFromTMDBApi, getMovieDetailFromApi } from '../api/TMDBApi';
 
-type Props = NativeStackScreenProps<SearchStackParamList, 'MovieDetails'>;
+type MovieDetailsScreenProp =
+  | CompositeScreenProps<
+      NativeStackScreenProps<SearchStackParamList, 'MovieDetails'>,
+      BottomTabScreenProps<RootTabParamList>
+    >
+  | CompositeScreenProps<
+      NativeStackScreenProps<FavoritesStackParamList, 'MovieDetails'>,
+      BottomTabScreenProps<RootTabParamList>
+    >;
 
-export default function MovieDetailsScreen({ route, navigation }: Props) {
+export default function MovieDetailsScreen({
+  route,
+  navigation,
+}: MovieDetailsScreenProp) {
   const favorites = useAppSelector((state) => state.favorites.list);
   const dispatch = useAppDispatch();
 
-  const id: Id = route.params.id;
-
   const [isLoading, setLoading] = useState(true);
   const [movie, setMovie] = useState<MovieData>();
+
+  const id: Id = route.params.id;
 
   useEffect(() => {
     async function _getMovie() {
@@ -58,14 +76,14 @@ export default function MovieDetailsScreen({ route, navigation }: Props) {
   }
 
   function _displayDate() {
-    if (movie && movie.release_date != undefined) {
+    if (movie !== undefined && movie.release_date !== undefined) {
       let date = new Date(movie.release_date);
       return date.toLocaleDateString();
     }
   }
 
   function _displayBudget() {
-    if (movie && movie.budget) {
+    if (movie !== undefined && movie.budget !== undefined) {
       return new Intl.NumberFormat('en-EN', {
         style: 'currency',
         currency: 'USD',
@@ -74,7 +92,7 @@ export default function MovieDetailsScreen({ route, navigation }: Props) {
   }
 
   function _displayProductionCompanies() {
-    if (movie && movie.production_companies) {
+    if (movie !== undefined && movie.production_companies !== undefined) {
       return movie.production_companies
         .map((production_company) => {
           return production_company.name;
@@ -110,6 +128,29 @@ export default function MovieDetailsScreen({ route, navigation }: Props) {
     );
   }
 
+  function _shareMovie() {
+    if (movie != undefined && movie.overview !== undefined) {
+      Share.share({ title: movie.title, message: movie.overview });
+    }
+  }
+
+  function _displayFloatingActionButton() {
+    if (movie != undefined) {
+      // Uniquement sur Android et lorsque le film est chargé
+      return (
+        <TouchableOpacity
+          style={styles.share_touchable_floatingactionbutton}
+          onPress={() => _shareMovie()}
+        >
+          <Image
+            style={styles.share_image}
+            source={require('../images/icon_share.android.png')}
+          />
+        </TouchableOpacity>
+      );
+    }
+  }
+
   function _displayMovie() {
     if (movie != undefined) {
       let image_url = getImageFromTMDBApi(movie.poster_path, 'w300');
@@ -143,6 +184,7 @@ export default function MovieDetailsScreen({ route, navigation }: Props) {
               <Text style={styles.bottom_text}>
                 Production companies: {_displayProductionCompanies()}
               </Text>
+              {_displayFloatingActionButton()}
             </View>
           </View>
         </ScrollView>
@@ -217,5 +259,21 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     fontSize: 17,
     color: 'dimgrey',
+  },
+
+  share_touchable_floatingactionbutton: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    right: 30,
+    bottom: 30,
+    borderRadius: 30,
+    backgroundColor: '#e91e63',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  share_image: {
+    width: 30,
+    height: 30,
   },
 });

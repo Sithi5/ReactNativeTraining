@@ -1,6 +1,6 @@
-import type Id from './Id';
-import type Genre from './Genre';
-import type ProductionCompany from './ProductionCompany';
+import type { Genre } from './Genre';
+import type { Id } from './Id';
+import type { ProductionCompany } from './ProductionCompany';
 
 export type MovieData = {
   id: Id;

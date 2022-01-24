@@ -5,24 +5,38 @@ import { View, StyleSheet, FlatList } from 'react-native';
 import MoviesItems from './MoviesItems';
 
 // Types
+import { CompositeNavigationProp } from '@react-navigation/native';
 import type { SearchNavigationProp } from './SearchScreen';
-import { FavoritesNavigationProp } from './FavoritesScreen';
+import type { FavoritesNavigationProp } from './FavoritesScreen';
 import type { MovieData } from '../types/MovieData';
 import type { Id } from '../types/Id';
 
+type Navigation = SearchNavigationProp | FavoritesNavigationProp;
+
 type Props = {
-  navigation: FavoritesNavigationProp | SearchNavigationProp;
+  navigation: Navigation;
   movies_data: MovieData[];
   page: number;
   total_page: number;
   _loadMovies?: () => void;
 };
 
+function isSearchNavigationProp(
+  navigation: Navigation
+): navigation is SearchNavigationProp {
+  return (navigation as SearchNavigationProp).navigate !== undefined;
+}
+
 export default function DisplayMoviesList(props: Props) {
   let { navigation, movies_data, page, total_page, _loadMovies } = props;
 
   function _navigateToMovieDetails(id: Id) {
-    navigation.navigate('MovieDetails', { id: id });
+    if (isSearchNavigationProp(navigation)) {
+      // Tricks with user-defined type guard for TypeScript to be happy,  the else is actually useless here.
+      navigation.navigate('MovieDetails', { id: id });
+    } else {
+      navigation.navigate('MovieDetails', { id: id });
+    }
   }
 
   return (

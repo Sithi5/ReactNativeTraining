@@ -1,25 +1,54 @@
 import React, { useRef } from 'react';
-
-import { View, StyleSheet, Animated } from 'react-native';
+import { Animated, Button, StyleSheet, View, PanResponder } from 'react-native';
 
 export default function TestScreen() {
-    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+    const spring_anim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+    const left_anim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
 
-    const springIn = () => {
-        // Will change fadeAnim value to 1 in 5 seconds
-        Animated.spring(fadeAnim, {
-            toValue: 100,
-            speed: 4,
-            bounciness: 30,
-            useNativeDriver: true,
-        }).start();
-    };
-    springIn();
+    let top_position = 0;
+    let left_position = 0;
+
+    const pan_responder = PanResponder.create({
+        onStartShouldSetPanResponder: (evt, gestureState) => true,
+        onPanResponderGrant: () => {
+            console.log('moooving');
+            top_position = 100;
+        },
+    });
+
+    function spring() {
+        Animated.parallel([
+            Animated.sequence([
+                Animated.spring(spring_anim, {
+                    toValue: 100,
+                    speed: 4,
+                    bounciness: 10,
+                    useNativeDriver: false,
+                }),
+                Animated.spring(spring_anim, {
+                    toValue: 0,
+                    speed: 10,
+                    bounciness: 40,
+                    useNativeDriver: false,
+                }),
+            ]),
+            Animated.timing(left_anim, {
+                toValue: 100,
+                useNativeDriver: false,
+                duration: 1000,
+            }),
+        ]).start();
+    }
 
     return (
         <View style={styles.main_container}>
+            <Button title="Clickclick" onPress={spring}></Button>
             <Animated.View
-                style={{ ...styles.animation_view, top: fadeAnim }}
+                style={{
+                    ...styles.animation_view,
+                    top: top_position,
+                    left: left_anim,
+                }}
             ></Animated.View>
         </View>
     );

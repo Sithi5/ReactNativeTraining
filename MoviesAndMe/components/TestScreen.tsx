@@ -2,53 +2,56 @@ import React, { useRef } from 'react';
 import { Animated, Button, StyleSheet, View, PanResponder } from 'react-native';
 
 export default function TestScreen() {
-    const spring_anim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
-    const left_anim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+    const pan = useRef(new Animated.ValueXY()).current;
+    const fade_anim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 1
 
-    let top_position = 0;
-    let left_position = 0;
+    const pan_responder = useRef(
+        PanResponder.create({
+            onMoveShouldSetPanResponder: () => true,
+            onPanResponderMove: (evt, gestureState) => {
+                const touches = evt.nativeEvent.touches;
+                if (touches.length == 1) {
+                    return Animated.event(
+                        [
+                            null, // raw event arg ignored
+                            { dx: pan.x, dy: pan.y }, // gestureState arg
+                        ],
+                        { useNativeDriver: false }
+                    )(evt, gestureState);
+                }
+            },
+            onPanResponderRelease: () => {
+                pan.extractOffset();
+            },
+        })
+    ).current;
 
-    const pan_responder = PanResponder.create({
-        onStartShouldSetPanResponder: (evt, gestureState) => true,
-        onPanResponderGrant: () => {
-            console.log('moooving');
-            top_position = 100;
-        },
-    });
-
-    function spring() {
-        Animated.parallel([
-            Animated.sequence([
-                Animated.spring(spring_anim, {
-                    toValue: 100,
-                    speed: 4,
-                    bounciness: 10,
-                    useNativeDriver: false,
-                }),
-                Animated.spring(spring_anim, {
-                    toValue: 0,
-                    speed: 10,
-                    bounciness: 40,
-                    useNativeDriver: false,
-                }),
-            ]),
-            Animated.timing(left_anim, {
-                toValue: 100,
+    function fade() {
+        Animated.sequence([
+            Animated.timing(fade_anim, {
+                toValue: 0,
                 useNativeDriver: false,
-                duration: 1000,
+                duration: 3000,
+            }),
+            Animated.timing(fade_anim, {
+                toValue: 1,
+                useNativeDriver: false,
+                duration: 3000,
             }),
         ]).start();
     }
 
     return (
         <View style={styles.main_container}>
-            <Button title="Clickclick" onPress={spring}></Button>
+            <Button title="Click to fade" onPress={fade}></Button>
+
             <Animated.View
                 style={{
+                    ...pan.getLayout(),
                     ...styles.animation_view,
-                    top: top_position,
-                    left: left_anim,
+                    opacity: fade_anim,
                 }}
+                {...pan_responder.panHandlers}
             ></Animated.View>
         </View>
     );
@@ -60,8 +63,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     animation_view: {
-        backgroundColor: 'red',
         width: 100,
         height: 100,
+        backgroundColor: 'red',
     },
 });

@@ -9,6 +9,7 @@ import {
     TouchableOpacity,
     Share,
     Platform,
+    Animated,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -28,6 +29,7 @@ import type { MovieData } from '../types/MovieData';
 
 // Api
 import { getImageFromTMDBApi, getMovieDetailFromApi } from '../api/TMDBApi';
+import FavoriteIconAnim from '../animations/FavoriteIconAnim';
 
 type MovieDetailsScreenProp =
     | CompositeScreenProps<
@@ -109,19 +111,10 @@ export default function MovieDetailsScreen({ route }: MovieDetailsScreenProp) {
     }
 
     function _displayFavoriteImage() {
-        if (favorites.includes(id)) {
-            return (
-                <Image
-                    style={styles.favorite_icon}
-                    source={require('../images/icon_favorite.png')}
-                />
-            );
-        }
         return (
-            <Image
-                style={styles.favorite_icon}
-                source={require('../images/icon_favorite_border.png')}
-            />
+            <FavoriteIconAnim
+                in_favorite={favorites.includes(id) ? true : false}
+            ></FavoriteIconAnim>
         );
     }
 
@@ -254,10 +247,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 30,
         color: 'black',
-    },
-    favorite_icon: {
-        width: 40,
-        height: 40,
     },
     overview_text: {
         flexWrap: 'wrap',

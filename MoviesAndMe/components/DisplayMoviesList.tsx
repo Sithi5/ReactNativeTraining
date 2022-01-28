@@ -2,7 +2,7 @@ import React from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 
 // Components
-import MoviesItems from './MoviesItems';
+import MoviesItems from './MovieItem';
 
 // Types
 import type { SearchNavigationProp } from './SearchScreen';

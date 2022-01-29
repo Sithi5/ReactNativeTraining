@@ -8,12 +8,11 @@ type Props = {
 export default function FavoriteIconAnim(props: Props) {
     const in_favorite = props.in_favorite;
 
-    function _getSize() {
+    function _getSize(): number {
         return in_favorite ? 80 : 40;
     }
 
     const enlarge_anim = useRef(new Animated.Value(_getSize())).current;
-    const should_enlarge = in_favorite ? true : false;
 
     function _getFavoritesImageSource() {
         switch (in_favorite) {
@@ -26,7 +25,7 @@ export default function FavoriteIconAnim(props: Props) {
 
     useEffect(() => {
         Animated.spring(enlarge_anim, {
-            toValue: should_enlarge ? 80 : 40,
+            toValue: _getSize(),
             useNativeDriver: false,
         }).start();
     });

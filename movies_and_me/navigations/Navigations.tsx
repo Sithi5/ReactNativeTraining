@@ -10,7 +10,7 @@ import FavoritesScreen from '../components/FavoritesScreen';
 // Type
 import type { RootTabParamList } from '../types/RootTabParamList';
 import type { SearchStackParamList } from '../types/SearchStackParamList';
-import { FavoritesStackParamList } from '../types/FavoritesStackParamList';
+import type { FavoritesStackParamList } from '../types/FavoritesStackParamList';
 import TestScreen from '../components/TestScreen';
 
 const SearchStack = createNativeStackNavigator<SearchStackParamList>();
